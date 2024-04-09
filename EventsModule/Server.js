@@ -1,6 +1,6 @@
 const http = require('http');
 const fs = require('fs');
-
+const path =require('path')
 
 const Server = http.createServer((req,res)=>{
     fs.readFile('Index.html',(err,data)=>{
@@ -14,4 +14,7 @@ const Server = http.createServer((req,res)=>{
 Server.listen(3000,()=>{
     console.log("server");
 })
+
+console.log(path);
+
 
