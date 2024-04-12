@@ -35,6 +35,35 @@ const server = http.createServer((req, res)=>{
       })
       
      })
+   }else if(url === '/login' && method === 'GET'){
+    fs.readFile(path.join(__dirname,'/login.html'),(err,data)=>{
+        if(err) throw err;
+        res.writeHead(200,{"x-content-type":"text/html"})
+        res.end(data)
+    })
+   }else if(url === '/login' && method === 'POST'){
+    let logdata = '';
+    req.on('data' , (logdatas)=>{
+    logdata+=logdatas
+    })
+    req.on('end',()=>{
+        const filterdata = newuser(logdata)
+        const logname = filterdata.name
+        const logpassword= filterdata.password
+        fs.readFile(path.join(__dirname,'data.json'),'utf-8',async (err,data)=>{
+            if(err) throw err
+            const users= await JSON.parse(data)
+            const find =await users?.find((value)=> value.username===logname && value.password === logpassword)
+            console.log(find , logname , logpassword , users);
+            if(find){
+                res.writeHead(200,{"content-type":'text/html'})
+                res.end('<h1>ok</h1>')
+            }else{
+                res.writeHead(404,{"content-type":'text/html'})
+                res.end('<h1>not found</h1>')
+            }
+        })
+    })
    }
 })
 
