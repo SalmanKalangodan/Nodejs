@@ -29,8 +29,8 @@ const server = http.createServer((req, res)=>{
         const newdatas= [...datass ,{username,password}]
         fs.writeFile(path.join(__dirname,'data.json'),JSON.stringify(newdatas), (err)=>{
          if(err ) throw err
-         res.writeHead(201,{location: '/login.html'})
-         res.end(path.join(__dirname,"/login.html"))
+         res.writeHead(302,{location: '/login'})
+         res.end()
         })
       })
       
@@ -56,13 +56,19 @@ const server = http.createServer((req, res)=>{
             const find =await users?.find((value)=> value.username===logname && value.password === logpassword)
             console.log(find , logname , logpassword , users);
             if(find){
-                res.writeHead(200,{"content-type":'text/html'})
-                res.end('<h1>ok</h1>')
+                res.writeHead(302,{ location:'/home'})
+                res.end()
             }else{
                 res.writeHead(404,{"content-type":'text/html'})
                 res.end('<h1>not found</h1>')
             }
         })
+    })
+   }else if(url === '/home' ){
+    fs.readFile(path.join(__dirname,"home.html"),'utf-8', (err,data)=>{
+        if(err) throw err
+        res.writeHead(200,{"content-type":'text/html'})
+        res.end()
     })
    }
 })
