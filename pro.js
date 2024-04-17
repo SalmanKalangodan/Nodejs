@@ -1,5 +1,6 @@
 const http = require('http')
 const fs = require('fs')
+const { ok } = require('assert')
 
 
 
@@ -54,26 +55,47 @@ const server  =  http.createServer((req,res)=>{
             res.end(JSON.stringify(newdata))
         })
        })
-    }if(url.startsWith('/pro/') && method === "PUT"){
-        const id = url.split('/')[2]
-        fs.readFile('pro.json','utf8', (err,data)=>{
-            if(err) throw err
-            const datas = JSON.parse(data)
-          const pdata=  datas.filter((value)=> {value.id === Number(id)
-            req.on('data' , (chank)=>{
-                value = chank
-                console.log(chank);
-            })
-        })
-        req.on('end',()=>{
-                
-        })
-          const ndata=  datas.filter((value)=> value.id === Number(id))
-          
-
-           
-        })
+    }if (url.startsWith('/pro/') && method === 'PUT') {
+        const id = url.split('/')[2];
+        let body = '';
+    
+        req.on('data', (chunk) => {
+            body += chunk;
+        });
+    
+        req.on('end', () => {
+            fs.readFile('pro.json', 'utf8', (err, data) => {
+                if (err) {
+                    res.writeHead(500, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ error: 'Internal Server Error' }));
+                    return;
+                }
+    
+                const products = JSON.parse(data);
+                const update = products.map(product => {
+                    if (product.id === Number(id)) {
+                        const newData = JSON.parse(body);
+                        newData.id = product.id;
+                        return newData;
+                    } else {
+                        return product;
+                    }
+                });
+    
+                fs.writeFile('pro.json', JSON.stringify(update), (err) => {
+                    if (err) {
+                        res.writeHead(500, { 'Content-Type': 'application/json' });
+                        res.end(JSON.stringify({ error: 'Internal Server Error' }));
+                        return;
+                    }
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify(updatedProducts));
+                });
+            });
+        });
     }
+    
+    
 })
 
 const PORT =3003
