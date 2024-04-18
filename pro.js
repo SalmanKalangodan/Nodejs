@@ -102,7 +102,7 @@ const PORT =3003
 
 
 server.listen(PORT,()=>{
-    console.log('server is running');
+    console.log(`server is running ${PORT}`);
 })
 
 const obj = (data) =>{
