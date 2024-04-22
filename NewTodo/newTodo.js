@@ -36,6 +36,9 @@ if(Url === '/Todos' && Method === 'POST'){
 if(Url === '/Todos' && Method === 'DELETE'){
     const readfile = fs.readFileSync('Tods.json','utf8')
 
+
+
+    
   
 }
 
