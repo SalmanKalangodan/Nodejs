@@ -27,7 +27,6 @@ const server  =  http.createServer((req,res)=>{
            
             req.on('end',()=>{
                 const d = JSON.parse(body)
-                console.log(d);
                 const newid = obj(d)
                 const newData = [...olddata,newid]
                 const n = JSON.stringify(newData)
